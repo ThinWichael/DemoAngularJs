@@ -31,7 +31,9 @@ app.run(['$rootScope', function($rootScope){
 //---Controller  ---  start line ---
 app.controller({
     'Header_Controller' : ['$scope','$rootScope','$location','$route','$cookies','$window', function($scope, $rootScope, $location, $route, $cookies,$window){
-    
+        $rootScope.uid = $cookies.get("uid");
+        // check Authorization
+        
     }],
     'mainProduct_Controller':['$scope','$rootScope','ProductService','$location','$cookies','$window','$translate','$route', function($scope, $rootScope, ProductService,$location,$cookies,$window,$translate,$route){
     
