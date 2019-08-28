@@ -10,8 +10,8 @@
 <!-- <link rel="stylesheet" href="/css/bootstrap.css"> -->
 <link rel="stylesheet" href="/css/style.css">
 
-<script type="text/javascript" src="/js/node_modules/angular/angular.min.js"></script>
-<script type="text/javascript" src="/js/node_modules/angular-translate/angular-translate.min.js"></script>
+<script type="text/javascript" src="/js/node_modules/angular/angular.js"></script>
+<script type="text/javascript" src="/js/node_modules/angular-translate/dist/angular-translate.min.js"></script>
 <script type="text/javascript" src="/js/node_modules/angular-route/angular-route.js"></script>
 <script type="text/javascript" src="/js/node_modules/angular-cookies/angular-cookies.js"></script>
 
@@ -23,8 +23,9 @@
 
 <body ng-app="mainApp">
 
+    <div  ng-include="'/template/_header.html'"></div>
 
-
+    <div ng-view ></div>
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
 <!-- <script src="/js/node_modules/jquery/dist/jquery.min.js"></script>  -->

@@ -1,4 +1,4 @@
-var app = angular.module('mainApp',['ngRoute','ngCookies','pascalprecht.translate','MyApiServiceModule']);
+var app = angular.module('mainApp',['ngRoute','ngCookies','pascalprecht.translate','MyServiceModule']);
 
 app.config(['$routeProvider','$translateProvider','$locationProvider','$httpProvider', function($routeProvider, $translateProvider, $locationProvider,$httpProvider){
 
@@ -8,9 +8,12 @@ app.config(['$routeProvider','$translateProvider','$locationProvider','$httpProv
     .otherwise({redirectTo:'/error/'});	
 
     //use the HTML5 History API
-    $locationProvider.html5Mode(true);
+    $locationProvider.html5Mode({
+		enabled: true,
+		requireBase: false
+	  });
 
-    $httpProvider.interceptors.push('MyHttpRequestInterceptor');
+    $httpProvider.interceptors.push('myHttpRequestInterceptor');
 }]);
 
 // before controller
@@ -24,8 +27,11 @@ app.run(['$rootScope', function($rootScope){
 	} else {
         selectCurrency = currency;
 	}
-				
-	$rootScope.fields = {currency: selectCurrency};
+		
+	//if you want to bind $rootscope with ng-model, need to put the parameter here
+	// it's a bug issue in angularJs
+	$rootScope.fields = {currency: selectCurrency,
+		                 userName: ""};
 }]);
 
 //---Controller  ---  start line ---
@@ -36,10 +42,65 @@ app.controller({
         
     }],
     'mainProduct_Controller':['$scope','$rootScope','ProductService','$location','$cookies','$window','$translate','$route', function($scope, $rootScope, ProductService,$location,$cookies,$window,$translate,$route){
-    
+	
+		$rootScope.fields.userName = "";
+		$rootScope.products = []; //array
+		$rootScope.buyingProduct = null;
+		// post api
+		$scope.getMyProductList = function(){
+			var requestObj = {
+				username: $rootScope.fields.userName
+			};
+			promise = ProductService.getMyProduct(requestObj);
+			 promise.then(function(rs){
+				 console.log(rs);
+				 if(!!rs.data.user && rs.data.products.products.length > 0){
+					$rootScope.fields.userName = rs.data.user;
+					$rootScope.fields.currency = rs.data.currency;
+					$rootScope.products = rs.data.products.products;
+				 }
+			 })
+		}
+		
+		// select currency
+		$scope.changeCurrency = function(){
+			//do something if you want !!
+		}
+
+		// Buy product
+		$scope.buyThisOne = function(product){
+			console.log(product);
+			
+			$rootScope.buyingProduct = product;
+
+			$location.path('/confirm/');
+		}
+
     }],
     'mainProductConfirm_Controller':['$scope','$rootScope','ProductService','$location','$cookies','$window','$translate','$route', function($scope, $rootScope, ProductService,$location,$cookies,$window,$translate,$route){
-    
+	
+        $scope.payPrice = null;
+
+		if( !$rootScope.buyingProduct || $rootScope.buyingProduct === null){
+			$location.path('/productlist/');
+		}
+
+		switch($rootScope.fields.currency){
+			case "JPY":
+				$scope.payPrice = $rootScope.buyingProduct.price.jpy;
+				break;
+			case "NTD":
+				$scope.payPrice = $rootScope.buyingProduct.price.ntd;
+				break;
+			case "JPY":
+				$scope.payPrice = $rootScope.buyingProduct.price.usd;
+				break;
+		}
+
+		$scope.goPayment = function(){
+			//to-do:
+		}
+
     }],
     'errorController':['$scope','$rootScope','$location',function($scope,$rootScope,$location){
         

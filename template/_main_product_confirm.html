@@ -2,13 +2,16 @@
 <div class="centerMedium">
    
       <div>
-          <p> Your shopping cart </p>
+          Dear {{ fields.userName }} , this is your order:
+          <p> shopping cart </p>
           <div>
-          <p> <b>BOO</b> : 99.00 <b>USD</b>  </p>
+          <p> <b>{{ buyingProduct.name }}</b> : <span ng-if="fields.currency === 'JPY'">{{ buyingProduct.price.jpy }}</span> 
+                                                <span ng-if="fields.currency === 'NTD'">{{ buyingProduct.price.ntd }}</span> 
+                                                <span ng-if="fields.currency === 'USD'">{{ buyingProduct.price.usd }}</span> <span data-ng-bind-html="fields.currency | currencyToMoneySign | htmlSafe" ></span>  </p>
           </div>
           <br>
           <br>
-          <button><b> Go payment ! </b></button> 
+          <button ng-click="goPayment()"><b> Go payment ! </b></button> 
       </div>
 </div>
 </div>

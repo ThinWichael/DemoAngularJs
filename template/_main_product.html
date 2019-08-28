@@ -2,15 +2,35 @@
 <div ng-controller="mainProduct_Controller">
 <div  class="centerMedium">
         <p>Name :</p>
-        <input type="text" class=""  placeholder="" >
+        <input type="text" class=""  placeholder="" ng-model="fields.userName">
         <br>
-        <button><b>SEND</b></button>
+        <button ng-click="getMyProductList()"><b>SEND</b></button>
         
         <br>
         
+        <div ng-show="!!fields.userName">Hello , {{ fields.userName }} ! Welcome ~</div>
+
+        <br>
+        Currency 
+        <br>
+
+        <select class="form-control" ng-model="fields.currency" ng-change="changeCurrency()" ng-disabled="isDisabled">
+				<option value="NTD">New Taiwan Dollar</option>
+				<option value="USD">US Dollar</option>
+				<option value="JPY">Japanese yen</option>				
+			    </select>
+
         <div>
-            <div>
+            <div ng-show="products.length === 0"> 
+                <!-- To-do : binding default currency, product, price, and button function -->
             <p> <b>BOO</b> : 99.00 USD  <button><b>BUY it!</b></button> </p>
+            </div>
+
+            <div ng-show="products.length > 0" ng-repeat=" product in products"> 
+                    <!-- To-do : binding default currency, product, price, and button function -->
+                <p> <b>{{ product.name }}</b> : <span ng-if="fields.currency === 'JPY'">{{ product.price.jpy }}</span> 
+                                                <span ng-if="fields.currency === 'NTD'">{{ product.price.ntd }}</span> 
+                                                <span ng-if="fields.currency === 'USD'">{{ product.price.usd }}</span> <span data-ng-bind-html="fields.currency | currencyToMoneySign | htmlSafe" ></span> <button ng-click="buyThisOne(product)"><b>BUY it!</b></button> </p>
             </div>
         </div>
 </div>
